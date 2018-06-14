@@ -15,12 +15,18 @@ Including another URLconf
 """
 from . import views
 from django.urls import path, include
-from django.http import HttpResponseRedirect
 app_name='files'
-urlpatterns = [
-
+"""
    path('getcont/<container>/<token>', views.get_cont, name="getcont"),
    path('getobj/<container>/<object>/<token>', views.get_obj, name="getobj"),
    path('getdetail/', views.search_object, name="getdetail"), 
    path('getacc/', views.get_acc, name="getacc"),
+"""
+urlpatterns = [
+
+
+    path('info/', views.container_list, name="acc_info"),
+    path('info/<container>', views.object_list, name="cont_info"),
+    path('info/<container>/<object>', views.download_object, name="obj_info"),
+
 ]
