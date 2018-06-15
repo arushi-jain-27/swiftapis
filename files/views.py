@@ -55,10 +55,16 @@ def get_obj(request, container,object, token):
     return render (request, 'files/success.html')
 
 """
+
 @api_view(['GET'])
 def download_object(request, container, object, format=None):
+    url = 'http://10.129.103.86:5000/v3/auth/tokens'
+    headers = {'content-type': 'application/json'}
+    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    r = requests.post(url, headers=headers, data=data)
+    token = r.headers.get('X-Subject-Token')
     if request.method == 'GET':
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object, headers={'X-Auth-Token': 'b5303fbd78134deab5671cbf4ee45155'})
+        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object, headers={'X-Auth-Token': token})
         with open(object, "wb") as code:
             code.write(r.content)
         return render(request, 'files/success.html')
@@ -66,8 +72,13 @@ def download_object(request, container, object, format=None):
 
 @api_view(['GET'])
 def container_list(request, format=None):
+    url = 'http://10.129.103.86:5000/v3/auth/tokens'
+    headers = {'content-type': 'application/json'}
+    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    r = requests.post(url, headers=headers, data=data)
+    token = r.headers.get('X-Subject-Token')
     if request.method == 'GET':
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/', headers={'X-Auth-Token': 'b5303fbd78134deab5671cbf4ee45155'}).text
+        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/', headers={'X-Auth-Token': token}).text
         obj_arr = r.split ("\n")
         obj_arr.pop()
         return Response (obj_arr)
@@ -75,8 +86,13 @@ def container_list(request, format=None):
 
 @api_view(['GET'])
 def object_list(request, container, format=None):
+    url = 'http://10.129.103.86:5000/v3/auth/tokens'
+    headers = {'content-type': 'application/json'}
+    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    r = requests.post(url, headers=headers, data=data)
+    token = r.headers.get('X-Subject-Token')
     if request.method == 'GET':
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/'+container , headers={'X-Auth-Token': 'b5303fbd78134deab5671cbf4ee45155'}).text
+        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/'+container , headers={'X-Auth-Token': token}).text
         obj_arr = r.split ("\n")
         obj_arr.pop()
         return Response (obj_arr)
