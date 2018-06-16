@@ -1,7 +1,7 @@
-from django.shortcuts import render
+
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
-import requests
+import requests, os
 
 """
 def get_acc (request):
@@ -67,10 +67,11 @@ def download_object(request, container, object, format=None):
         r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object, headers={'X-Auth-Token': token})
         with open(object, "wb") as code:
             code.write(r.content)
-        return render(request, 'files/success.html')
+        return Response (r.headers)
 
 
-@api_view(['GET'])
+
+@api_view(['GET', 'PUT'])
 def container_list(request, format=None):
     url = 'http://10.129.103.86:5000/v3/auth/tokens'
     headers = {'content-type': 'application/json'}
@@ -82,9 +83,13 @@ def container_list(request, format=None):
         obj_arr = r.split ("\n")
         obj_arr.pop()
         return Response (obj_arr)
+    if request.method =='PUT':
+        new_cont = request.data
+        r = requests.put ('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + new_cont, headers={'X-Auth-Token': token}).text
+        return Response (r)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 def object_list(request, container, format=None):
     url = 'http://10.129.103.86:5000/v3/auth/tokens'
     headers = {'content-type': 'application/json'}
@@ -96,6 +101,12 @@ def object_list(request, container, format=None):
         obj_arr = r.split ("\n")
         obj_arr.pop()
         return Response (obj_arr)
+    if request.method =='PUT':
+        url = request.data
+        obj = os.path.basename(url)
+        r = requests.put ('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/'+container + '/' + obj , headers={'X-Auth-Token': token}, data = open (url, "rb")).text
+        return Response (r)
+
 
 
 
