@@ -1,25 +1,9 @@
-
+from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 import requests, os
 from rest_framework.reverse import reverse
 
-
-@api_view(['GET', 'DELETE'])
-def download_object(request, container, object, format=None):
-    url = 'http://10.129.103.86:5000/v3/auth/tokens'
-    headers = {'content-type': 'application/json'}
-    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
-    r = requests.post(url, headers=headers, data=data)
-    token = r.headers.get('X-Subject-Token')
-    if request.method == 'GET':
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object, headers={'X-Auth-Token': token})
-        with open(object, "wb") as code:
-            code.write(r.content)
-        return Response (r.headers)
-    if request.method =='DELETE':
-        r = requests.delete('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object, headers={'X-Auth-Token': token}).text
-        return Response (r)
 
 
 @api_view(['GET', 'PUT'])
@@ -46,7 +30,7 @@ def container_list(request, format=None):
         return Response (r)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'DELETE', 'POST'])
 def object_list(request, container, format=None):
     url = 'http://10.129.103.86:5000/v3/auth/tokens'
     headers = {'content-type': 'application/json'}
@@ -70,12 +54,42 @@ def object_list(request, container, format=None):
         obj = os.path.basename(url)
         r = requests.put ('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/'+container + '/' + obj , headers={'X-Auth-Token': token}, data = open (url, "rb")).text
         return Response (r)
+    if request.method == 'POST':
+        t = {'X-Auth-Token': token }
+        data = JSONParser().parse(request)
+        data.update (t)
+        requests.post('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container,headers=data)
+        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container,
+                         headers={'X-Auth-Token': token})
+        return Response (r.headers)
     if request.method =='DELETE':
         r = requests.delete('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container, headers={'X-Auth-Token': token}).text
         return Response (r)
 
 
-
+@api_view(['GET','POST', 'DELETE'])
+def download_object(request, container, object, format=None):
+    url = 'http://10.129.103.86:5000/v3/auth/tokens'
+    headers = {'content-type': 'application/json'}
+    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    r = requests.post(url, headers=headers, data=data)
+    token = r.headers.get('X-Subject-Token')
+    if request.method == 'GET':
+        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object, headers={'X-Auth-Token': token})
+        with open(object, "wb") as code:
+            code.write(r.content)
+        return Response (r.headers)
+    if request.method == 'POST':
+        t = {'X-Auth-Token': token}
+        data = JSONParser().parse(request)
+        data.update(t)
+        requests.post('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container, headers=data)
+        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container,
+                         headers={'X-Auth-Token': token})
+        return Response(r.headers)
+    if request.method =='DELETE':
+        r = requests.delete('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object, headers={'X-Auth-Token': token}).text
+        return Response (r)
 
 
     
