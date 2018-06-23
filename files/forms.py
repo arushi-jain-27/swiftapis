@@ -1,22 +1,10 @@
 from django import forms
-from .models import Files
+from .models import Object
 
-class FilesForm(forms.ModelForm):
-
-    class Meta:
-        model = Files
-        fields = ['container', 'object', 'token', 'location']
-
-
-class ContainerForm(forms.ModelForm):
+class ObjectForm(forms.ModelForm):
 
     class Meta:
-        model = Files
-        fields = ['container',  'token']
+        model = Object
+        fields = ['file']
 
 
-class AccountForm(forms.ModelForm):
-
-    class Meta:
-        model = Files
-        fields = ['token']
