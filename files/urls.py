@@ -27,6 +27,7 @@ urlpatterns = [
 
     path('info/', views.container_list, name="acc_info"),
     path('info/<container>', views.object_list, name="cont_info"),
-    path('info/<container>/<object>', views.download_object, name="obj_info"),
+    path('info/<container>/<object>', views.object_details, name="obj_info"),
+    path('info/<container>/<object>/download', views.download_object, name="obj_download")
 
 ]

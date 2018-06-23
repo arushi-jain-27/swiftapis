@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6ba9fdfd-e48e-4f1a-8a1c-199d8f275126" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doc SS/ResourceURL.PNG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/files/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/files/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/files/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/files/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -14,18 +16,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/files/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="23" column="3" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
-              <folding>
-                <element signature="e#629#648#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="display_cont.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/files/templates/files/display_cont.html">
           <provider selected="true" editor-type-id="text-editor">
@@ -47,8 +37,11 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/files/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="45" selection-start-column="45" selection-end-column="45" />
+            <state relative-caret-position="477">
+              <caret line="95" column="4" lean-forward="true" selection-start-line="95" selection-start-column="4" selection-end-line="95" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#45#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -69,6 +62,18 @@
               <caret line="6" selection-start-line="6" selection-end-line="6" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/files/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="476">
+              <caret line="29" column="58" selection-start-line="29" selection-start-column="58" selection-end-line="29" selection-end-column="58" />
+              <folding>
+                <element signature="e#629#648#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -103,9 +108,9 @@
         <option value="$PROJECT_DIR$/files/curl.json" />
         <option value="$PROJECT_DIR$/files/templates/files/display_cont.html" />
         <option value="$PROJECT_DIR$/swift/settings.py" />
-        <option value="$PROJECT_DIR$/files/urls.py" />
         <option value="$PROJECT_DIR$/files/models.py" />
         <option value="$PROJECT_DIR$/files/admin.py" />
+        <option value="$PROJECT_DIR$/files/urls.py" />
         <option value="$PROJECT_DIR$/files/views.py" />
       </list>
     </option>
@@ -119,7 +124,7 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="10" />
     <option name="y" value="20" />
     <option name="width" value="1346" />
@@ -229,7 +234,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -558,16 +563,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/files/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="23" column="3" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
-          <folding>
-            <element signature="e#629#648#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/swift/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -591,10 +586,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/files/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="29" column="58" selection-start-line="29" selection-start-column="58" selection-end-line="29" selection-end-column="58" />
+          <folding>
+            <element signature="e#629#648#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/files/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="45" selection-start-column="45" selection-end-column="45" />
+        <state relative-caret-position="477">
+          <caret line="95" column="4" lean-forward="true" selection-start-line="95" selection-start-column="4" selection-end-line="95" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
