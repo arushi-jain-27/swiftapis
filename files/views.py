@@ -10,14 +10,22 @@ from django.shortcuts import render
 
 
 @api_view(['GET', 'PUT'])
-def container_list(request, format=None):
+def container_list(request,account, format=None):
     url = 'http://10.129.103.86:5000/v3/auth/tokens'
     headers = {'content-type': 'application/json'}
-    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    if (account == "swift"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_b3f70be8acad4ec197e2b5edf48d9e5a"
+    elif (account == "openedx"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "openedx",\n          "domain": { "name": "default" },\n          "password": "openedx"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "openedx",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_081223a854f54e37a0d6a1c383c5577e"
+    else:
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "telemet",\n          "domain": { "name": "default" },\n          "password": "telemet"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "datastore",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_5b2bcbcb10f347aaa4c7b0e370c2c055"
     r = requests.post(url, headers=headers, data=data)
     token = r.headers.get('X-Subject-Token')
     if request.method == 'GET':
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/', headers={'X-Auth-Token': token}).text
+        r = requests.get('http://10.129.103.86:8080/v1/' + acc , headers={'X-Auth-Token': token}).text
         obj_arr = r.split ("\n")
         obj_arr.pop()
         rows = len(obj_arr)
@@ -25,33 +33,51 @@ def container_list(request, format=None):
         Matrix = [[0 for x in range(columns)] for x in range(rows)]
         for i in range(rows):
             Matrix[i][0] = obj_arr[i]
-            Matrix[i][1] = reverse('files:cont_info', kwargs={'container': obj_arr[i]}, request=request, format=format)
-            Matrix[i][2] = reverse('files:upload', kwargs={'container': obj_arr[i]}, request=request, format=format)
-            Matrix[i][3] = reverse('files:metadata', kwargs={'container': obj_arr[i]}, request=request, format=format)
+            Matrix[i][1] = reverse('files:cont_info', kwargs={'account':account,'container': obj_arr[i]}, request=request, format=format)
+            Matrix[i][2] = reverse('files:upload', kwargs={'account':account,'container': obj_arr[i]}, request=request, format=format)
+            Matrix[i][3] = reverse('files:metadata', kwargs={'account':account,'container': obj_arr[i]}, request=request, format=format)
         return Response(Matrix)
     if request.method =='PUT':
-        new_cont = request.data
-        r = requests.put ('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + new_cont, headers={'X-Auth-Token': token}).text
+        data = JSONParser().parse(request)
+        # new_cont = request.data
+        new_cont = data["name"]
+        r = requests.put ('http://10.129.103.86:8080/v1/' + acc + '/' + new_cont, headers={'X-Auth-Token': token}).text
         return Response (r)
 
 @api_view (['GET'])
-def metadata (request, container, format=None):
+def metadata (request, account, container, format=None):
     url = 'http://10.129.103.86:5000/v3/auth/tokens'
     headers = {'content-type': 'application/json'}
-    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    if (account == "swift"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_b3f70be8acad4ec197e2b5edf48d9e5a"
+    elif (account == "openedx"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "openedx",\n          "domain": { "name": "default" },\n          "password": "openedx"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "openedx",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_081223a854f54e37a0d6a1c383c5577e"
+    else:
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "telemet",\n          "domain": { "name": "default" },\n          "password": "telemet"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "datastore",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_5b2bcbcb10f347aaa4c7b0e370c2c055"
     r = requests.post(url, headers=headers, data=data)
     token = r.headers.get('X-Subject-Token')
     if request.method == 'GET':
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container,
+        r = requests.get('http://10.129.103.86:8080/v1/' + acc + '/' + container,
                          headers={'X-Auth-Token': token})
         return Response (r.headers)
 
 
 @api_view(['GET', 'DELETE', 'POST'])
-def object_list(request, container, format=None):
+def object_list(request, account, container, format=None):
     url = 'http://10.129.103.86:5000/v3/auth/tokens'
     headers = {'content-type': 'application/json'}
-    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    if (account == "swift"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_b3f70be8acad4ec197e2b5edf48d9e5a"
+    elif (account == "openedx"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "openedx",\n          "domain": { "name": "default" },\n          "password": "openedx"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "openedx",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_081223a854f54e37a0d6a1c383c5577e"
+    else:
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "telemet",\n          "domain": { "name": "default" },\n          "password": "telemet"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "datastore",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_5b2bcbcb10f347aaa4c7b0e370c2c055"
     r = requests.post(url, headers=headers, data=data)
     token = r.headers.get('X-Subject-Token')
     if request.method == 'GET':
@@ -63,40 +89,48 @@ def object_list(request, container, format=None):
         Matrix = [[0 for x in range(columns)] for x in range(rows)]
         for i in range(rows):
             Matrix[i][0] = obj_arr[i]
-            Matrix[i][1] = reverse('files:obj_info', kwargs={'container': container, 'object': obj_arr[i]},
+            Matrix[i][1] = reverse('files:obj_info', kwargs={'account':account,'container': container, 'object': obj_arr[i]},
                                    request=request, format=format)
-            Matrix[i][2] = reverse('files:obj_download', kwargs={'container': container, 'object': obj_arr[i]},
+            Matrix[i][2] = reverse('files:obj_download', kwargs={'account':account,'container': container, 'object': obj_arr[i]},
                                    request=request, format=format)
         return Response(Matrix)
     if request.method == 'POST':
         t = {'X-Auth-Token': token }
         data = JSONParser().parse(request)
         data.update (t)
-        requests.post('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container,headers=data)
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container,
+        requests.post('http://10.129.103.86:8080/v1/' + acc + '/' + container,headers=data)
+        r = requests.get('http://10.129.103.86:8080/v1/' + acc + '/' + container,
                          headers={'X-Auth-Token': token})
         return Response (r.headers)
     if request.method =='DELETE':
-        r = requests.delete('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container, headers={'X-Auth-Token': token}).text
+        r = requests.delete('http://10.129.103.86:8080/v1/' + acc + '/' + container, headers={'X-Auth-Token': token}).text
         return Response (r)
 
 
 @api_view(['GET','POST', 'DELETE'])
-def object_details(request, container, object, format=None):
+def object_details(request, account, container, object, format=None):
     url = 'http://10.129.103.86:5000/v3/auth/tokens'
     headers = {'content-type': 'application/json'}
-    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    if (account == "swift"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_b3f70be8acad4ec197e2b5edf48d9e5a"
+    elif (account == "openedx"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "openedx",\n          "domain": { "name": "default" },\n          "password": "openedx"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "openedx",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_081223a854f54e37a0d6a1c383c5577e"
+    else:
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "telemet",\n          "domain": { "name": "default" },\n          "password": "telemet"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "datastore",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_5b2bcbcb10f347aaa4c7b0e370c2c055"
     r = requests.post(url, headers=headers, data=data)
     token = r.headers.get('X-Subject-Token')
     if request.method == 'GET':
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object, headers={'X-Auth-Token': token})
+        r = requests.get('http://10.129.103.86:8080/v1/' + acc + '/' + container + '/' + object, headers={'X-Auth-Token': token})
         return Response (r.headers)
     if request.method == 'POST':
         t = {'X-Auth-Token': token}
         data = JSONParser().parse(request)
         data.update(t)
-        requests.post('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object, headers=data)
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object,
+        requests.post('http://10.129.103.86:8080/v1/' + acc + '/' + container + '/' + object, headers=data)
+        r = requests.get('http://10.129.103.86:8080/v1/' + acc + '/' + container + '/' + object,
                          headers={'X-Auth-Token': token})
         return Response(r.headers)
     if request.method =='DELETE':
@@ -106,15 +140,23 @@ def object_details(request, container, object, format=None):
 
     
 @api_view(['GET'])
-def download_object(request, container, object, format=None):
+def download_object(request, account, container, object, format=None):
     url = 'http://10.129.103.86:5000/v3/auth/tokens'
     headers = {'content-type': 'application/json'}
-    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    if (account == "swift"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_b3f70be8acad4ec197e2b5edf48d9e5a"
+    elif (account == "openedx"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "openedx",\n          "domain": { "name": "default" },\n          "password": "openedx"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "openedx",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_081223a854f54e37a0d6a1c383c5577e"
+    else:
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "telemet",\n          "domain": { "name": "default" },\n          "password": "telemet"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "datastore",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_5b2bcbcb10f347aaa4c7b0e370c2c055"
     r = requests.post(url, headers=headers, data=data)
     token = r.headers.get('X-Subject-Token')
     if request.method == 'GET':
         r = requests.get(
-            'http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + object,
+            'http://10.129.103.86:8080/v1/' + acc + '/' + container + '/' + object,
             headers={'X-Auth-Token': token}).content
 
         name,ext = os.path.splitext(object)
@@ -140,19 +182,27 @@ def download_object(request, container, object, format=None):
 
 
 @api_view (['GET'])
-def metadata (request, container, format=None):
+def metadata (request, account, container, format=None):
     url = 'http://10.129.103.86:5000/v3/auth/tokens'
     headers = {'content-type': 'application/json'}
-    data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+    if (account == "swift"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_b3f70be8acad4ec197e2b5edf48d9e5a"
+    elif (account == "openedx"):
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "openedx",\n          "domain": { "name": "default" },\n          "password": "openedx"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "openedx",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_081223a854f54e37a0d6a1c383c5577e"
+    else:
+        data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "telemet",\n          "domain": { "name": "default" },\n          "password": "telemet"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "datastore",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+        acc = "AUTH_5b2bcbcb10f347aaa4c7b0e370c2c055"
     r = requests.post(url, headers=headers, data=data)
     token = r.headers.get('X-Subject-Token')
     if request.method == 'GET':
-        r = requests.get('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container,
+        r = requests.get('http://10.129.103.86:8080/v1/' + acc + '/' + container,
                          headers={'X-Auth-Token': token})
         return Response (r.headers)
 
 @api_view (['GET', 'POST'])
-def upload (request, container, format=None):
+def upload (request, account, container, format=None):
     form = ObjectForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         a = form.save(commit=False)
@@ -163,15 +213,23 @@ def upload (request, container, format=None):
             a.save()
             url = 'http://10.129.103.86:5000/v3/auth/tokens'
             headers = {'content-type': 'application/json'}
-            data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+            if (account == "swift"):
+                data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "swift",\n          "domain": { "name": "default" },\n          "password": "swift"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "service",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+                acc = "AUTH_b3f70be8acad4ec197e2b5edf48d9e5a"
+            elif (account == "openedx"):
+                data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "openedx",\n          "domain": { "name": "default" },\n          "password": "openedx"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "openedx",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+                acc = "AUTH_081223a854f54e37a0d6a1c383c5577e"
+            else:
+                data = '\n{ "auth": {\n    "identity": {\n      "methods": ["password"],\n      "password": {\n        "user": {\n          "name": "telemet",\n          "domain": { "name": "default" },\n          "password": "telemet"\n        }\n      }\n    },\n    "scope": {\n      "project": {\n        "name": "datastore",\n        "domain": { "name": "default" }\n      }\n    }\n  }\n}'
+                acc = "AUTH_5b2bcbcb10f347aaa4c7b0e370c2c055"
             r = requests.post(url, headers=headers, data=data)
             token = r.headers.get('X-Subject-Token')
             path = "C:/Users/ARUSHI/Desktop/swift/media/"+a.file.name
             #return Response (a.file.name)
-            s = requests.put('http://10.129.103.86:8080/v1/AUTH_b3f70be8acad4ec197e2b5edf48d9e5a/' + container + '/' + a.file.name,
+            s = requests.put('http://10.129.103.86:8080/v1/' + acc + '/' + container + '/' + a.file.name,
                              headers={'X-Auth-Token': token}, data=open(path, "rb")).text
             os.remove(path)
-            return Response(s)
+            return Response(a.file.name + " successfully uploaded in " + container)
         else:
             return Response ("Format not supported. Supported formats include png, jpeg, mp3, mp4, zip, pdf, txt. For all other files, create a zip file and try again!")
     context = {

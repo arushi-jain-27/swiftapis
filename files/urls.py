@@ -20,11 +20,11 @@ app_name='files'
 urlpatterns = [
 
 
-    path('info/', views.container_list, name="acc_info"),
-    path('info/<container>', views.object_list, name="cont_info"),
-    path('info/<container>/metadata', views.metadata, name="metadata"),
-    path('info/<container>/upload', views.upload, name="upload"),
-    path('info/<container>/<object>', views.object_details, name="obj_info"),
-    path('info/<container>/<object>/download', views.download_object, name="obj_download")
+    path('info/<account>', views.container_list, name="acc_info"),
+    path('info/<account>/<container>', views.object_list, name="cont_info"),
+    path('info/<account>/<container>/metadata', views.metadata, name="metadata"),
+    path('info/<account>/<container>/upload', views.upload, name="upload"),
+    path('info/<account>/<container>/<object>', views.object_details, name="obj_info"),
+    path('info/<account>/<container>/<object>/download', views.download_object, name="obj_download")
 
 ]
